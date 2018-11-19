@@ -1,22 +1,19 @@
 # TODO:
 # ✓ Timing of input -- how long did it take?
-# Words per minute calculation
-# If errors, how many errors?
+# ✓ Words per minute calculation
+# ✓ If errors, how many errors?
 # Letters per minute calculation
 # Capture backspaces?
-# Measure error?
-# Log file to measure progress
+# ✓ Measure error?
+# ✓ Log file to measure progress
 # Progress chart
 
 ################################################################################
-# BEGIN LIBRARIES and OPEN FILES
+# OPEN FILES
 ################################################################################
 
-#using UnicodePlots
-#using CSV
-#using DataFrames
 words = open("words.txt", "r")
-scoreFile = open("scores.txt", "a") 
+scoreFile = open("wordScores.txt", "a") 
 
 ################################################################################
 # BEGIN FUNCTIONS
@@ -33,11 +30,14 @@ end
 
 # Calculate number of words in response.
 function nbCorrect(benchmark, attempt)
+
   count = 0
   c = 0
   a = split(attempt)
   b = benchmark
-  a ≥  b ? c = b : c = a
+  # Need to account for b ≥ a or vice versa ⇒ indexing error
+  length(a) ≥ length(b) ? c = b : c = a
+
   for i ∈ 1:length(c)
     if a[i] == b[i]
       count += 1
@@ -98,22 +98,15 @@ t = @elapsed response = readline()
 # Raw number of words input
 rawWordLength = length(split(response))
 
-# BEGIN SCORES
 beginScores()
 println("Number of words input is: " * string(rawWordLength) * "\n")
-
 # Number of correct words
 score = nbCorrect(paragraph, response)
-#println("Accuracy score is: " * string(score/length(split(response))))
-
 # Words per minute calculation
 println("Words per minute: " * string(wpm(score, t))) 
-
 # Calculate total word error.
 error = ((length(split(response)) - score)/float(length(split(response))))*100.0
 println("Error is: " * string(error) * "%" )
-
-# END SCORES
 endScores()
 
 # Save scores
@@ -126,14 +119,3 @@ write(scoreFile,
 # Close files and cat out scores to terminal. 
 close(words)
 close(scoreFile)
-#df = DataFrame(CSV.File("scores.txt"))
-#display(tail(df))
-#print("\n")
-
-# Load score data and plot it
-#x1 = collect(1:1:length(df[1]))
-#x2 = collect(1:1:length(df[2]))
-#x3 = collect(1:1:length(df[3]))
-#lineplot(x1,  convert(Array{Float64}, df[1]))
-#lineplot!(x2, convert(Array{Float64}, df[2]))
-#lineplot!(x3, convert(Array{Float64}, df[3]))
