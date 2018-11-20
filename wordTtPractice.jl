@@ -46,10 +46,10 @@ function nbCorrect(benchmark, attempt)
   return count
 end 
 
-# Calculates the number of correct words per minute.
-function wpm(scr, timeSecs)
+# Calculates the number words per minute.
+function wpm(rawLength, timeSecs)
   timeMins = timeSecs/60.0
-  return scr/timeMins
+  return rawLength/timeMins
 end
 
 function beginScores()
@@ -103,7 +103,7 @@ println("Number of words input is: " * string(rawWordLength) * "\n")
 # Number of correct words
 score = nbCorrect(paragraph, response)
 # Words per minute calculation
-println("Words per minute: " * string(wpm(score, t))) 
+println("Words per minute: " * string(wpm(rawWordLength, t))) 
 # Calculate total word error.
 error = ((length(split(response)) - score)/float(length(split(response))))*100.0
 println("Error is: " * string(error) * "%" )
